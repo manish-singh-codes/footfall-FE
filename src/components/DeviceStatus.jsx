@@ -1,0 +1,25 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+export default function DeviceStatus() {
+  const [devices, setDevices] = useState([]);
+
+  useEffect(() => {
+    const fetchDevices = async () => {
+      const res = await axios.get('http://localhost:5000/api/devices');
+      setDevices(res.data);
+    };
+    fetchDevices();
+  }, []);
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold mb-4">Device Status</h2>
+      {devices.map((device, idx) => (
+        <div key={idx} className={`mb-2 p-2 border ${device.status === 'active' ? 'border-green-500' : 'border-red-500'}`}>
+          {device.sensor_id} - {device.status} (Last Seen: {new Date(device.last_seen).toLocaleTimeString()})
+        </div>
+      ))}
+    </div>
+  );
+}
